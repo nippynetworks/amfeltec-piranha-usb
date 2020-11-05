@@ -1,0 +1,79 @@
+# Makefile Include File
+#
+# ----------------------------------------------------------------------------
+#
+
+
+#Check if DAHDI exists
+DAHDI_EXISTS=NO
+
+ifneq (,$(wildcard $(DAHDI_DIR)/linux/include/dahdi/kernel.h))
+	DAHDI_VER_DIR=$(DAHDI_DIR)/linux
+	DAHDI_DRV_DIR=$(DAHDI_VER_DIR)/drivers
+	DAHDI_INCL_DIR=$(DAHDI_VER_DIR)/include
+
+    DAHDI_EXISTS=YES
+    DAHDI22:=$(shell grep 2.2 $(DAHDI_VER_DIR)/.version)
+    DAHDI23:=$(shell grep 2.3 $(DAHDI_VER_DIR)/.version)
+    DAHDI24:=$(shell grep 2.4 $(DAHDI_VER_DIR)/.version)
+    DAHDI25:=$(shell grep 2.5 $(DAHDI_VER_DIR)/.version)
+    DAHDI26:=$(shell grep 2.6 $(DAHDI_VER_DIR)/.version)
+    DAHDI27:=$(shell grep 2.7 $(DAHDI_VER_DIR)/.version)
+    DAHDI28:=$(shell grep 2.8 $(DAHDI_VER_DIR)/.version)
+    DAHDI29:=$(shell grep 2.9 $(DAHDI_VER_DIR)/.version)
+    DAHDI210:=$(shell grep 2.10 $(DAHDI_VER_DIR)/.version)
+
+else
+ifneq (,$(wildcard $(DAHDI_DIR)/include/dahdi/kernel.h))
+	DAHDI_VER_DIR=$(DAHDI_DIR)/include/dahdi
+	DAHDI_DRV_DIR=$(DAHDI_DIR)/drivers/dahdi
+	DAHDI_INCL_DIR=$(DAHDI_VER_DIR)
+
+    DAHDI_EXISTS=YES
+    DAHDI31:=$(shell grep 3.1 $(DAHDI_VER_DIR)/version.h)
+endif
+endif
+
+ifeq "${DAHDI_EXISTS}" "YES"
+    GLOBAL_CFLAGS = -D__DAHDI__ -I$(DAHDI_DRV_DIR) -I$(DAHDI_INCL_DIR)
+    ifneq "${DAHDI210}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=29
+    else 
+    ifneq "${DAHDI29}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=29
+    else 
+    ifneq "${DAHDI28}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=28
+    else 
+    ifneq "${DAHDI27}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=27
+    else 
+	ifneq "${DAHDI26}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=26
+    else 
+	ifneq "${DAHDI25}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=25
+	else 
+	ifneq "${DAHDI24}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=24
+	else 
+	ifneq "${DAHDI23}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=23
+	else 
+	ifneq "${DAHDI22}" ""
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=22
+	else
+		GLOBAL_CFLAGS += -DDAHDI_VERSION=31
+	endif
+	endif
+	endif
+	endif
+	endif
+	endif
+	endif
+	endif
+	endif
+endif
+
+
+
